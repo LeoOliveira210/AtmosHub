@@ -1,0 +1,289 @@
+{
+  "version": 1,
+  "author": "Leonardo Oliveira da Silva",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard",
+      "id": "bb1",
+      "top": 294.6,
+      "left": -160.4,
+      "attrs": {}
+    },
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": -230.4,
+      "left": 100.84,
+      "attrs": {
+        "env": "micropython-20260406-v1.28.0"
+      }
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -412.5,
+      "left": -63,
+      "attrs": {
+        "temperature": "59.6",
+        "humidity": "79.5"
+      }
+    },
+    {
+      "type": "board-bmp180",
+      "id": "bmp1",
+      "top": -349.76,
+      "left": 365.06,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldr1",
+      "top": -6.4,
+      "left": -402.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-gas-sensor",
+      "id": "gas1",
+      "top": 12.3,
+      "left": 419.8,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
+      "top": -172.8,
+      "left": 700,
+      "attrs": {
+        "key": "r"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "esp:TX",
+      "$serialMonitor:RX",
+      "",
+      []
+    ],
+    [
+      "esp:RX",
+      "$serialMonitor:TX",
+      "",
+      []
+    ],
+    [
+      "bb1:tp.1",
+      "esp:3V3",
+      "red",
+      [
+        "v-28.5",
+        "h191.2",
+        "v-480",
+        "h19.2"
+      ]
+    ],
+    [
+      "bb1:tp.2",
+      "bb1:1t.a",
+      "red",
+      [
+        "v29.1",
+        "h-29.6"
+      ]
+    ],
+    [
+      "ldr1:VCC",
+      "bb1:1t.b",
+      "red",
+      [
+        "h38.4",
+        "v345.6"
+      ]
+    ],
+    [
+      "esp:5V",
+      "bb1:bp.50",
+      "orange",
+      [
+        "h-9.45",
+        "v316.8",
+        "h403.2",
+        "v230.4"
+      ]
+    ],
+    [
+      "dht1:VCC",
+      "bb1:1t.d",
+      "red",
+      [
+        "h-134.4",
+        "v672"
+      ]
+    ],
+    [
+      "bmp1:3.3V",
+      "bb1:1t.e",
+      "red",
+      [
+        "h0",
+        "v307.39",
+        "h-19.2",
+        "v240",
+        "h-614.4",
+        "v144"
+      ]
+    ],
+    [
+      "dht1:SDA",
+      "esp:15",
+      "blue",
+      [
+        "v48",
+        "h259.3",
+        "v9.6"
+      ]
+    ],
+    [
+      "esp:GND.1",
+      "bb1:tn.1",
+      "black",
+      [
+        "h-38.25",
+        "v307.2",
+        "h-181.6"
+      ]
+    ],
+    [
+      "bb1:tn.50",
+      "bb1:63t.a",
+      "black",
+      [
+        "v-0.1",
+        "h18.4"
+      ]
+    ],
+    [
+      "gas1:GND",
+      "bb1:63t.b",
+      "black",
+      [
+        "h9.6",
+        "v-0.8"
+      ]
+    ],
+    [
+      "bmp1:GND",
+      "bb1:63t.c",
+      "black",
+      [
+        "h153.6",
+        "v681.79",
+        "h0",
+        "v19.2"
+      ]
+    ],
+    [
+      "dht1:GND",
+      "bb1:63t.d",
+      "black",
+      [
+        "v9.6",
+        "h374.4",
+        "v-76.8",
+        "h86.4",
+        "v19.2",
+        "h153.6",
+        "v384",
+        "h0",
+        "v336"
+      ]
+    ],
+    [
+      "ldr1:GND",
+      "bb1:63t.e",
+      "black",
+      [
+        "h28.8",
+        "v210.8",
+        "h-9.6",
+        "v163.2",
+        "h38.4",
+        "v124.8",
+        "h681.6",
+        "v-134.4"
+      ]
+    ],
+    [
+      "esp:21",
+      "bmp1:SDA",
+      "blue",
+      [
+        "h28.8",
+        "v-124.8",
+        "h211.2",
+        "v-38.4"
+      ]
+    ],
+    [
+      "bmp1:SCL",
+      "esp:22",
+      "gold",
+      [
+        "h19.2",
+        "v57.79",
+        "h-211.2",
+        "v86.4"
+      ]
+    ],
+    [
+      "esp:35",
+      "gas1:AOUT",
+      "cyan",
+      [
+        "h-19.05",
+        "v153.6",
+        "h470.4"
+      ]
+    ],
+    [
+      "bb1:bp.49",
+      "gas1:VCC",
+      "orange",
+      [
+        "v27.9",
+        "h143.2",
+        "v-470.4"
+      ]
+    ],
+    [
+      "esp:34",
+      "ldr1:AO",
+      "cyan",
+      [
+        "h-326.25",
+        "v201.6"
+      ]
+    ],
+    [
+      "esp:27",
+      "btn1:1.l",
+      "cyan",
+      [
+        "h60",
+        "v57.6"
+      ]
+    ],
+    [
+      "btn1:2.l",
+      "bb1:tn.2",
+      "black",
+      [
+        "v76.8",
+        "h-576"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}
