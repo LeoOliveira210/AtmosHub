@@ -25,7 +25,7 @@ AtmosHub/
 - LDR: luminosidade — GPIO 34
 - Sensor de gas Wokwi: leitura analogica — GPIO 35
 - Botao: simulacao do pluviometro — GPIO 27
-
+ 
 ## Pluviometro
 
 Cada pressionamento valido do botao representa um pulso de um pluviometro de bascula.
