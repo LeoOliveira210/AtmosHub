@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<!-- Essa linha diz pro navegador: "isso aqui é um documento HTML5".
+     Toda página HTML moderna começa assim. -->
+
+<html lang="pt-BR">
+<!-- <html> é a tag que envolve a página inteira.
+     lang="pt-BR" avisa o navegador (e leitores de tela) que o
+     conteúdo está em português do Brasil. -->
+
+<head>
+<!-- Tudo dentro de <head> NÃO aparece visualmente na página.
+     Aqui ficam configurações, título da aba, fontes, e o CSS. -->
+
+  <meta charset="UTF-8">
+  <!-- Define a codificação de caracteres como UTF-8, que suporta
+       acentos (á, ç, ã) e emojis corretamente. Sem isso, "ção"
+       pode virar um monte de símbolo estranho na tela. -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Isso é o que faz a página se comportar bem no celular:
+       diz pro navegador usar a largura real da tela do dispositivo
+       em vez de simular uma tela de computador. -->
+
+  <title>AtmosHub — Dashboard da Estação Meteorológica</title>
+  <!-- Esse é o texto que aparece na ABA do navegador, não na página. -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- Isso é uma otimização: avisa o navegador "você vai precisar
+       conectar nesse site (Google Fonts) daqui a pouco", então ele
+       já começa a conexão antes mesmo de precisar, ganhando tempo. -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Essa linha importa a fonte "Poppins" do Google Fonts.
+       Os números (400, 500, 600, 700) são os "pesos" da fonte:
+       400 = normal, 700 = bem grossa (bold). Importamos só os
+       pesos que vamos realmente usar, pra página carregar mais rápido. -->
+
+  <style>
+    /* A partir daqui, tudo é CSS: as regras que definem a APARÊNCIA
+       da página (cor, tamanho, espaçamento, posição). */
+
+    :root {
+      /* :root representa o documento inteiro. Quando você cria uma
+         variável CSS aqui dentro (com --nome), ela fica disponível
+         pra usar em QUALQUER lugar do CSS, com var(--nome). */
+
+      --bg: #0b0e16;
+      /* Cor de fundo da página inteira: um azul-marinho quase preto,
+         bem profundo, pra dar aquela sensação de "painel noturno". */
+
+      --card: #151a27;
+      /* Cor de fundo dos cards principais: um pouco mais claro que o --bg,
+         pra eles se destacarem sem ficar um contraste violento. */
+
+      --card-light: #1e2436;
+      /* Cor de fundo dos mini-cards (um pouco mais clara ainda, pra
+         criar uma hierarquia visual sutil entre os tipos de card). */
+
+      --roxo: #9b87f5;
+      /* Cor de destaque roxa (um lavanda mais vibrante) — vou usar
+         numa das linhas do gráfico. */
+
+      --laranja: #f6a95e;
+      /* Cor de destaque âmbar/laranja quente — usada na linha de
+         temperatura do gráfico. */
+
+      --texto: #f4f6fb;
+      /* Cor do texto principal: quase branco, pra contrastar com o fundo escuro. */
+
+      --texto-fraco: #8993ab;
+      /* Cor de texto secundário (rótulos, datas): um cinza-azulado
+         mais apagado, pra não competir com o texto principal. */
+    }
+
+    * {
+      /* O asterisco (*) seleciona TODOS os elementos da página.
+         As regras aqui dentro se aplicam a tudo, sem exceção. */
+
+      box-sizing: border-box;
+      /* Isso muda como o navegador calcula o tamanho de um elemento:
+         com border-box, padding e borda ficam DENTRO da largura/altura
+         que você define, em vez de somar por fora. Evita muita dor
+         de cabeça com elementos "estourando" o layout. */
+
+      margin: 0;
+      /* Zera a margem externa de todo elemento. Navegadores vêm com
+         margens padrão diferentes (títulos, parágrafos, listas já têm
+         espaçamento de fábrica) — zerando tudo, a gente controla
+         manualmente cada espaçamento depois. */
+
+      padding: 0;
+      /* Mesma ideia, mas pro espaçamento INTERNO do elemento. */
+    }
+
+    body {
+      /* <body> é a tag que envolve todo o conteúdo VISÍVEL da página. */
+
+      background: var(--bg);
+      /* Usa a variável --bg que definimos lá em cima como cor de fundo. */
+
+      color: var(--texto);
+      /* Cor padrão do texto dentro do body (pode ser sobrescrita
+         em elementos específicos depois). */
+
+      font-family: 'Poppins', sans-serif;
+      /* Define a fonte usada no texto. 'Poppins' é a que importamos;
+         sans-serif é um "plano B" genérico, caso a Poppins não carregue
+         por algum motivo (sem internet, por exemplo). */
+
+      padding: 24px;
+      /* Espaço de 24 pixels entre o conteúdo e a borda da tela,
+         pra nada ficar colado no limite da janela. */
+    }
+
+    .cabecalho {
+      /* O ponto (.) antes do nome indica que isso é uma "classe" CSS.
+         Classes são reutilizáveis: qualquer elemento com
+         class="cabecalho" no HTML recebe essas regras. */
+
+      display: flex;
+      /* "flex" transforma esse elemento num container flexível, que
+         organiza os filhos dele em linha (por padrão) e permite
+         alinhar e distribuir o espaço entre eles facilmente. */
+
+      justify-content: space-between;
+      /* Com flex ativado, essa linha empurra o primeiro filho pra
+         esquerda e o último pra direita, com o espaço vazio no meio.
+         É assim que o "AtmosHub" fica na esquerda e a hora na direita. */
+
+      align-items: center;
+      /* Alinha os filhos verticalmente ao centro um do outro, mesmo
+         que tenham tamanhos de fonte diferentes. */
+
+      margin-bottom: 24px;
+      /* Espaço de 24px embaixo do cabeçalho, separando ele do resto
+         do conteúdo. */
+    }
+
+    .cabecalho h1 {
+      /* Essa regra afeta só o <h1> que estiver DENTRO de um elemento
+         com classe "cabecalho" (não qualquer h1 da página). */
+
+      font-size: 22px;
+      font-weight: 600;
+      /* 600 é um peso "semi-bold": mais grosso que o normal (400),
+         mas não tão pesado quanto o bold máximo (700 ou 900). */
+    }
+
+    .cabecalho p {
+      font-size: 13px;
+      color: var(--texto-fraco);
+      /* Deixa a hora da última leitura discreta, num tom mais claro/apagado. */
+    }
+
+    .painel-principal {
+      display: flex;
+      /* De novo o flex, mas agora pra organizar o card principal e
+         o painel de destaques lado a lado. */
+
+      flex-wrap: wrap;
+      /* Isso é o segredo da responsividade aqui: se não couber os
+         dois lado a lado (tela estreita, celular), o segundo desce
+         pra próxima linha automaticamente, sem eu precisar escrever
+         uma media query específica pra isso. */
+
+      gap: 16px;
+      /* Espaço de 16px entre os itens dentro do flex (sem precisar
+         ficar colocando margin em cada filho manualmente). */
+
+      margin-bottom: 24px;
+    }
+
+    .card-hoje {
+      background: var(--card);
+      border-radius: 20px;
+      /* Arredonda os cantos do card em 20px — quanto maior o número,
+         mais arredondado fica. */
+
+      padding: 24px;
+
+      flex: 1 1 280px;
+      /* Essa é a parte "mágica" do flex que controla o tamanho:
+         - o primeiro "1" (flex-grow) diz "pode crescer pra ocupar
+           espaço extra disponível"
+         - o segundo "1" (flex-shrink) diz "pode encolher se precisar"
+         - "280px" (flex-basis) é o tamanho "ideal" de partida
+         Na prática: esse card tenta ter uns 280px, mas cresce ou
+         encolhe conforme o espaço da tela. */
+    }
+
+    .card-hoje .data {
+      /* Seleciona um elemento com classe "data" que esteja DENTRO
+         de um elemento com classe "card-hoje". */
+
+      font-size: 14px;
+      color: var(--texto-fraco);
+      margin-bottom: 16px;
+    }
+
+    .card-hoje .linha-principal {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      /* Coloca a temperatura na esquerda e o emoji do clima na
+         direita, na mesma linha. */
+    }
+
+    .card-hoje .temperatura {
+      font-size: 48px;
+      /* Bem grande de propósito: é o dado mais importante da tela. */
+      font-weight: 700;
+    }
+
+    .card-hoje .icone {
+      font-size: 48px;
+      /* O emoji também usa font-size pra controlar o tamanho,
+         porque emoji tecnicamente é tratado como texto/caractere. */
+    }
+
+    .card-hoje .status {
+      margin-top: 8px;
+      color: var(--texto-fraco);
+      font-size: 14px;
+    }
+
+    .destaques {
+      flex: 1 1 280px;
+      /* Mesmo esquema de flexibilidade do card-hoje, pra esse painel
+         ocupar um espaço parecido com o card principal. */
+
+      display: grid;
+      /* Diferente do flex (que organiza numa linha ou coluna), o
+         "grid" permite montar uma grade de linhas E colunas ao
+         mesmo tempo — ideal pra organizar os 4 mini-cards em 2x2. */
+
+      grid-template-columns: 1fr 1fr;
+      /* Define 2 colunas de larguras IGUAIS. "1fr" significa
+         "1 fração do espaço disponível" — com duas colunas de 1fr
+         cada, elas dividem o espaço meio a meio. */
+
+      gap: 12px;
+      /* Espaço entre os mini-cards, tanto na horizontal quanto na
+         vertical (no grid, "gap" cobre as duas direções de uma vez). */
+    }
+
+    .mini-card {
+      background: var(--card-light);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .mini-card .rotulo {
+      font-size: 13px;
+      color: var(--texto-fraco);
+      margin-bottom: 6px;
+    }
+
+    .mini-card .valor {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .historico {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .historico h2 {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--texto-fraco);
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 480px) {
+      /* Uma "media query": essas regras SÓ valem quando a largura
+         da tela for 480px ou menos (basicamente, celulares). Em
+         telas maiores, essa parte do CSS é ignorada. */
+
+      .destaques {
+        grid-template-columns: 1fr;
+        /* Muda de 2 colunas pra 1 coluna só, empilhando os
+           mini-cards verticalmente no celular, onde não tem
+           espaço horizontal suficiente pra 2 lado a lado. */
+      }
+    }
+  </style>
+  <!-- Fim do CSS -->
+</head>
+
+<body>
+<!-- A partir daqui é o conteúdo que REALMENTE aparece na tela. -->
+
+  <div class="cabecalho">
+  <!-- <div> é uma "caixa" genérica, sem significado próprio — serve
+       pra agrupar outros elementos e aplicar estilo neles. -->
+
+    <h1>AtmosHub</h1>
+    <!-- <h1> é o título principal da página (título de nível 1,
+         o mais importante hierarquicamente). -->
+
+    <p>última leitura: <span id="hora-atualizacao">--:--</span></p>
+    <!-- <p> é um parágrafo de texto comum.
+         <span> é parecido com <div>, mas pensado pra ficar
+         DENTRO de uma linha de texto (inline), sem quebrar linha.
+         id="hora-atualizacao" é um identificador ÚNICO nessa página —
+         é assim que o JavaScript vai encontrar exatamente esse
+         elemento depois, com document.getElementById("hora-atualizacao"). -->
+  </div>
+
+  <div class="painel-principal">
+  <!-- Essa div agrupa o card principal + o painel de destaques,
+       pra poder aplicar o "display: flex" que já vimos no CSS. -->
+
+    <div class="card-hoje">
+
+      <p class="data" id="data-atual">--</p>
+      <!-- Começa com "--" só como um placeholder visual, indicando
+           "ainda não temos esse dado". O JavaScript troca isso
+           pela data de verdade assim que a API responder. -->
+
+      <div class="linha-principal">
+        <span class="temperatura" id="temperatura">--°C</span>
+        <span class="icone" id="icone-clima">🌤️</span>
+      </div>
+
+      <p class="status" id="status-qualidade-ar">Qualidade do ar: --</p>
+
+    </div>
+
+    <div class="destaques">
+    <!-- Aqui dentro ficam os 4 mini-cards. Repare que a estrutura
+         de cada um é idêntica (só muda o texto e o id) — isso é
+         de propósito, deixa fácil copiar esse padrão se um dia
+         quiserem adicionar um 5º sensor. -->
+
+      <div class="mini-card">
+        <p class="rotulo">💧 Umidade</p>
+        <p class="valor"><span id="umidade">--</span>%</p>
+        <!-- O % fica FORA do span de propósito: o JavaScript só
+             precisa trocar o número (dentro do span), o símbolo
+             de porcentagem já fica fixo no HTML. -->
+      </div>
+
+      <div class="mini-card">
+        <p class="rotulo">📊 Pressão</p>
+        <p class="valor"><span id="pressao">--</span> hPa</p>
+      </div>
+
+      <div class="mini-card">
+        <p class="rotulo">☀️ Luminosidade</p>
+        <p class="valor"><span id="luminosidade">--</span> lux</p>
+      </div>
+
+      <div class="mini-card">
+        <p class="rotulo">🌧️ Chuva</p>
+        <p class="valor"><span id="chuva">--</span> mm</p>
+      </div>
+
+    </div>
+    <!-- fim de .destaques -->
+
+  </div>
+  <!-- fim de .painel-principal -->
+
+  <div class="historico">
+    <h2>Histórico recente</h2>
+    <canvas id="grafico"></canvas>
+    <!-- <canvas> é uma tag especial do HTML: é uma "tela em branco"
+         onde bibliotecas como o Chart.js podem DESENHAR gráficos
+         usando JavaScript. Sozinha, ela não faz nada visível. -->
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Importa a biblioteca Chart.js de um CDN (um servidor externo
+       que hospeda bibliotecas prontas). Isso cria uma variável
+       global chamada "Chart" que a gente usa no nosso app.js. -->
+
+  <script src="app.js"></script>
+  <!-- Importa o NOSSO código. Precisa vir DEPOIS do Chart.js,
+       porque nosso app.js usa a variável "Chart" — se a ordem
+       fosse invertida, "Chart" ainda não existiria quando nosso
+       código tentasse usá-la, e daria erro. -->
+
+</body>
+</html>
