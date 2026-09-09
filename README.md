@@ -33,6 +33,27 @@ O valor inicial usado na simulacao e 0,2 mm por pulso e pode ser alterado no `ma
 
 **## Comunicação**
 
-A comunicação entre o ESP32 e o servidor será realizada utilizando MQTT.
+A comunicação entre o ESP32 e o servidor é realizada utilizando MQTT.
 
-A configuração do broker, tópicos e envio dos dados será definida durante o desenvolvimento da Issue #2.
+- Broker: broker.hivemq.com
+- Porta: 1883
+- Tópico principal: atmoshub/sensores
+- Formato da mensagem: JSON contendo todas as leituras dos sensores.
+- Frequência de envio: a cada 2 segundos o ESP32 publica uma nova mensagem.
+
+**## Exemplo de mensagem JSON**
+
+{
+  "temperatura_ar": 59.6,
+  "umidade_ar": 79.5,
+  "temperatura_bmp180": 24.0,
+  "pressao_hpa": 1013.23,
+  "luminosidade_bruta": 1001,
+  "qualidade_ar_bruta": 3628,
+  "chuva_pulsos": 39,
+  "chuva_acumulada": 7.8
+}
+
+**##Assinando os dados no terminal**
+
+` .\mosquitto_sub.exe -h broker.hivemq.com -t "atmoshub/sensores" `
