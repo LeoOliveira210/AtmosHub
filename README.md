@@ -37,7 +37,7 @@ A comunicação entre o ESP32 e o servidor é realizada utilizando MQTT.
 
 - Broker: broker.hivemq.com
 - Porta: 1883
-- Tópico principal: atmoshub/sensores
+- Tópico principal: atmoshub/dados
 - Formato da mensagem: JSON contendo todas as leituras dos sensores.
 - Frequência de envio: a cada 2 segundos o ESP32 publica uma nova mensagem.
 
