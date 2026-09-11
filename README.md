@@ -56,4 +56,4 @@ A comunicação entre o ESP32 e o servidor é realizada utilizando MQTT.
 
 **##Assinando os dados no terminal**
 
-` .\mosquitto_sub.exe -h broker.hivemq.com -t "atmoshub/sensores" `
+` .\mosquitto_sub.exe -h broker.hivemq.com -t "atmoshub/dados" `
