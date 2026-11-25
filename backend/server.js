@@ -14,7 +14,7 @@ app.use(express.json());
 const PORT = 3000;
 const TOPICO = "atmoshub/dados";
 
-// Conexão com PostgreSQL
+
 const banco = new Pool({
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -27,7 +27,7 @@ let ultimaLeitura = null;
 let mqttConectado = false;
 let idsSensores = {};
 
-// Cadastra a estação e os sensores caso ainda não existam
+
 async function prepararBanco() {
     const conexao = await banco.connect();
 
@@ -94,7 +94,6 @@ async function prepararBanco() {
     }
 }
 
-// Salva as leituras recebidas no banco
 async function salvarMedicoes(dados) {
     const medicoes = [
         ["temperatura", dados.temperatura_ar],
@@ -134,7 +133,7 @@ async function salvarMedicoes(dados) {
     }
 }
 
-// Inicialização do servidor
+
 async function iniciarServidor() {
     try {
         await prepararBanco();

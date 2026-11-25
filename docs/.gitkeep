@@ -1,0 +1,374 @@
+# AtmosHub — Estação Meteorológica com ESP32
+
+## 1. Sobre o projeto
+
+O AtmosHub é um projeto de estação meteorológica desenvolvido com o ESP32, com o objetivo de coletar informações do ambiente por meio de sensores e disponibilizar esses dados para visualização em um dashboard.
+
+O sistema foi desenvolvido em etapas, organizadas em cinco sprints. Durante o desenvolvimento, foram realizadas simulações, testes de leitura dos sensores, validações dos dados, integração com backend, armazenamento em banco de dados e construção de um painel de visualização.
+
+### 1.1 Objetivo geral
+
+Desenvolver uma estação meteorológica capaz de coletar informações ambientais, processar os dados e disponibilizá-los em uma interface para acompanhamento.
+
+### 1.2 Componentes utilizados
+
+- ESP32: microcontrolador responsável pela leitura e processamento dos dados.
+- DHT22: sensor utilizado para medir temperatura e umidade.
+- LDR: sensor utilizado para identificar a intensidade luminosa do ambiente.
+- BMP280: sensor previsto para medição de pressão atmosférica.
+- MQ-135: sensor utilizado para identificar variações relacionadas à qualidade do ar.
+- Pluviômetro: componente previsto para identificação da ocorrência de chuva.
+
+O MQ-135 permite observar variações relacionadas à qualidade do ar, mas não substitui equipamentos profissionais ou certificados de medição ambiental.
+
+## 2. Começando
+
+Para acompanhar o desenvolvimento do projeto, foram utilizadas ferramentas de simulação e desenvolvimento.
+
+### 2.1 Ferramentas utilizadas
+
+- Wokwi: ambiente online utilizado para simular o ESP32 e os sensores.
+- Visual Studio Code: ambiente utilizado para edição dos códigos.
+- Python: linguagem utilizada no desenvolvimento do backend.
+- SQLite: banco de dados utilizado para armazenar as leituras.
+- MQTT: protocolo previsto para comunicação entre o dispositivo e o backend.
+- Dashboard: interface utilizada para visualizar os dados coletados.
+
+### 2.2 Arquitetura do sistema
+
+O funcionamento planejado para o AtmosHub segue o fluxo:
+
+1. O ambiente fornece as condições que serão medidas.
+2. Os sensores realizam as leituras.
+3. O ESP32 recebe e processa os valores.
+4. Os dados são enviados por meio da comunicação prevista.
+5. O backend recebe e organiza as informações.
+6. Os dados são armazenados no banco de dados.
+7. O dashboard apresenta as informações ao usuário.
+
+## 3. Desenvolvimento do projeto
+
+O desenvolvimento foi dividido em cinco sprints, permitindo implementar e testar as funcionalidades gradualmente.
+
+## 4. Sprint 1 — Planejamento e montagem inicial
+
+Na primeira sprint, foi realizada a organização inicial do projeto, incluindo a definição da equipe, escolha do tema e planejamento dos componentes que seriam utilizados.
+
+O grupo definiu a criação de uma estação meteorológica utilizando o ESP32, com sensores responsáveis por coletar informações do ambiente.
+
+### 4.1 Atividades realizadas
+
+- Definição do tema AtmosHub.
+- Organização dos integrantes da equipe.
+- Escolha inicial dos sensores.
+- Planejamento das funcionalidades.
+- Criação do projeto no simulador Wokwi.
+- Montagem inicial do circuito com o ESP32 e os componentes previstos.
+- Organização das primeiras tarefas do projeto.
+
+### 4.2 Resultado da sprint
+
+Ao final da primeira sprint, o grupo tinha definido a proposta do projeto e iniciado a montagem da estrutura no simulador.
+
+## 5. Sprint 2 — Leitura dos sensores
+
+Na segunda sprint, o foco foi trabalhar com a leitura dos sensores e realizar alterações na montagem do circuito.
+
+Foi criada uma nova versão do projeto, identificada como V02, mantendo o sensor DHT22 e adicionando o LDR.
+
+### 5.1 Alterações realizadas
+
+O sensor LDR foi conectado ao ESP32 da seguinte maneira:
+
+| Componente | Conexão |
+|---|---|
+| LDR — AO | GPIO 34 |
+| VCC | 3V3 |
+| GND | GND |
+| DO | Não utilizado |
+
+A leitura do LDR foi realizada por meio da função `read_u16()`, responsável por obter um valor numérico correspondente à leitura analógica.
+
+### 5.2 Testes realizados
+
+Durante os testes, foram registrados os seguintes valores:
+
+| Informação | Valor registrado |
+|---|---:|
+| Temperatura | 80,0 °C |
+| Umidade | 7,0% |
+| Leitura do LDR | 10882 |
+| Iluminação utilizada | 100 lux e 1000 lux |
+
+Foi observado que a leitura analógica do LDR apresenta um valor numérico bruto. Portanto, esse número não representa diretamente a intensidade luminosa em lux.
+
+### 5.3 Resultado da sprint
+
+A segunda sprint permitiu avançar na leitura dos sensores e na integração do LDR com o ESP32.
+
+## 6. Sprint 3 — Validação dos dados
+
+Na terceira sprint, o foco foi melhorar a validação das informações recebidas pelos sensores.
+
+Foi mantida a versão anterior do projeto e criada uma nova versão identificada como V04.
+
+### 6.1 Validação da umidade
+
+Foi implementada uma condição para verificar se o valor de umidade estava dentro de uma faixa válida:
+
+`0 <= umidade <= 100`
+
+Essa validação permite identificar valores que estejam fora do intervalo esperado.
+
+### 6.2 Testes realizados
+
+Durante os testes, foram registrados os seguintes valores:
+
+| Informação | Valor |
+|---|---:|
+| Umidade | 7,5% |
+| Leitura do LDR | 16019 |
+| Situação da umidade | OK |
+| Situação da iluminação | Mais iluminado |
+
+Também foi realizado um teste artificial utilizando o valor de 150% de umidade para verificar o comportamento do sistema diante de um valor inconsistente.
+
+### 6.3 Resultado da validação
+
+O sistema passou a identificar duas situações:
+
+- OK: quando o valor está dentro do intervalo esperado.
+- INCONSISTENTE: quando o valor está fora do intervalo definido.
+
+O teste com 150% foi utilizado para verificar a condição de inconsistência, não sendo uma leitura real do sensor.
+
+É importante destacar que identificar um valor inconsistente não significa que o sistema tenha corrigido automaticamente esse valor.
+
+### 6.4 Resultado da sprint
+
+A terceira sprint trouxe melhorias na validação dos dados, permitindo identificar possíveis valores fora do padrão esperado.
+
+## 7. Sprint 4 — Integração com backend
+
+Na quarta sprint, o projeto avançou para a integração entre o ESP32 e o backend.
+
+Foi utilizada a versão do firmware identificada como `EQ2_S4_V05`.
+
+### 7.1 Comunicação MQTT
+
+Foi definido o seguinte tópico MQTT para a comunicação:
+
+`unip-pdii-2026/equipe2/dados`
+
+O objetivo era permitir que o ESP32 enviasse os dados coletados pelos sensores para o backend.
+
+### 7.2 Backend e banco de dados
+
+Foram utilizados os seguintes arquivos:
+
+- `backend_aula8.py`: arquivo responsável pelo backend.
+- `aula8_dados.db`: banco de dados utilizado para armazenar os registros.
+
+Foram realizados testes controlados com dados em formato JSON para verificar o recebimento, processamento e armazenamento das informações.
+
+Esses testes demonstraram o funcionamento do caminho entre o JSON, o backend, o banco de dados e a API. Entretanto, não comprovam, por si só, o funcionamento da comunicação MQTT real entre o ESP32 e o backend.
+
+### 7.3 Testes realizados
+
+Durante os testes, foram utilizadas alterações nos valores para verificar o processamento das informações.
+
+| Informação | Valor |
+|---|---:|
+| Amostra inicial | 45 |
+| Amostra alterada | 47 |
+| Temperatura inicial | 24 °C |
+| Temperatura alterada | 21 °C |
+| Umidade | 50% |
+| Leitura do LDR | 16019 |
+| Situação | OK |
+| Iluminação | Mais iluminado |
+
+### 7.4 Resultado da sprint
+
+O backend e o armazenamento em banco de dados foram testados com dados controlados.
+
+A comunicação MQTT real ainda precisava de comprovação. Também ficou registrada uma pendência relacionada à validação dos campos da API, apesar de a avaliação final da atividade indicar conceito A.
+
+## 8. Sprint 5 — Dashboard e visualização dos dados
+
+Na quinta sprint, o foco foi apresentar os dados armazenados por meio de um dashboard.
+
+Durante essa etapa, a comunicação Wi-Fi e MQTT real não foi comprovada devido às restrições de segurança da rede institucional.
+
+Por esse motivo, foram utilizados dados controlados para testar o funcionamento do backend, do banco de dados e da interface.
+
+### 8.1 Arquivos utilizados
+
+- `backend_aula10.py`: arquivo responsável pelo backend da atividade.
+- `aula10_dados.db`: banco de dados utilizado para armazenar as leituras.
+
+### 8.2 Dashboard
+
+O dashboard foi disponibilizado localmente no seguinte endereço:
+
+`http://127.0.0.1:8000/dashboard`
+
+A interface apresenta informações organizadas para facilitar o acompanhamento dos dados.
+
+### 8.3 Endpoints da API
+
+Foram utilizados os seguintes endpoints:
+
+| Endpoint | Função |
+|---|---|
+| `/api/status` | Apresenta informações sobre o estado do sistema. |
+| `/api/ultima` | Retorna a última leitura registrada. |
+| `/api/leituras` | Retorna os registros armazenados. |
+
+### 8.4 Dados registrados
+
+Durante os testes, foram armazenados 12 registros no banco de dados.
+
+A última leitura registrada apresentou os seguintes valores:
+
+| Informação | Valor |
+|---|---|
+| ID | 12 |
+| Amostra | 12 |
+| Temperatura | 29,1 °C |
+| Umidade | 61,0% |
+| Situação | OK |
+| Leitura do LDR | 12900 |
+| Iluminação | Mais iluminado |
+| Recebimento | 2026-10-28T13:11:39+00:00 |
+
+### 8.5 Comparação das leituras
+
+| Informação | Primeiro registro | Último registro |
+|---|---:|---:|
+| Temperatura | 23,5 °C | 29,1 °C |
+| Umidade | 42,0% | 61,0% |
+
+Os valores apresentados fazem parte da série de dados controlados utilizada durante os testes.
+
+Os horários registrados são didáticos e estão em UTC, não representando necessariamente o horário real de cada medição.
+
+Também não é possível afirmar que a variação da temperatura tenha causado a variação da umidade apenas com base nesses registros.
+
+### 8.6 Funcionamento do dashboard
+
+O dashboard apresenta:
+
+- Indicadores com os valores mais recentes.
+- Gráficos para acompanhamento das informações.
+- Tabela com os registros armazenados.
+- Dados obtidos por meio da API.
+
+A interface consulta os endpoints do backend para apresentar as informações. Ela não acessa diretamente o banco de dados SQLite.
+
+### 8.7 Resultado da sprint
+
+Ao final da quinta sprint, foi possível visualizar os dados de forma organizada por meio do dashboard, utilizando as informações armazenadas no banco de dados.
+
+A integração com dados controlados foi demonstrada, mas a comunicação MQTT real permaneceu como uma funcionalidade pendente de comprovação.
+
+## 9. Resultados e limitações
+
+Durante as cinco sprints, o projeto evoluiu desde o planejamento inicial até a construção de uma estrutura com sensores, backend, banco de dados e dashboard.
+
+### 9.1 Funcionalidades desenvolvidas ou testadas
+
+- Planejamento da estação meteorológica.
+- Montagem e simulação do ESP32 no Wokwi.
+- Leitura do sensor DHT22.
+- Leitura analógica do LDR.
+- Validação dos valores de umidade.
+- Identificação de valores inconsistentes.
+- Desenvolvimento do backend em Python.
+- Testes de recebimento de dados JSON.
+- Armazenamento de registros no SQLite.
+- Criação de endpoints para consulta dos dados.
+- Desenvolvimento do dashboard.
+- Visualização dos registros por meio de gráficos e tabelas.
+
+### 9.2 Limitações identificadas
+
+- A comunicação Wi-Fi e MQTT real não foi comprovada.
+- Foram utilizados dados controlados para validar o backend e o dashboard.
+- A leitura analógica do LDR não representa diretamente valores em lux.
+- O MQ-135 não substitui equipamentos profissionais de medição da qualidade do ar.
+- A validação de dados identifica inconsistências, mas não significa que os valores sejam corrigidos automaticamente.
+- Os horários dos registros utilizados na quinta sprint são didáticos.
+
+## 10. Implantação e execução
+
+Para executar a estrutura desenvolvida na quinta sprint, é necessário utilizar o backend e o banco de dados correspondentes.
+
+### 10.1 Arquivos principais
+
+| Arquivo | Descrição |
+|---|---|
+| `backend_aula10.py` | Código do backend. |
+| `aula10_dados.db` | Banco de dados SQLite. |
+
+### 10.2 Acesso ao dashboard
+
+Com o backend em execução local, o dashboard pode ser acessado pelo endereço:
+
+`http://127.0.0.1:8000/dashboard`
+
+Os dados apresentados são consultados por meio dos endpoints disponibilizados pela API.
+
+## 11. Tecnologias utilizadas
+
+| Tecnologia | Utilização |
+|---|---|
+| ESP32 | Microcontrolador do projeto. |
+| DHT22 | Medição de temperatura e umidade. |
+| LDR | Identificação da luminosidade. |
+| BMP280 | Sensor previsto para pressão atmosférica. |
+| MQ-135 | Identificação de variações relacionadas à qualidade do ar. |
+| Wokwi | Simulação do circuito. |
+| Python | Desenvolvimento do backend. |
+| SQLite | Armazenamento dos dados. |
+| MQTT | Protocolo previsto para comunicação. |
+| API | Disponibilização dos dados. |
+| Dashboard | Visualização das informações. |
+| Visual Studio Code | Edição dos arquivos do projeto. |
+
+## 12. Organização da equipe
+
+Integrantes do Grupo 2:
+
+- Beatriz Rodrigues
+- Julia Pinotti
+- Rayane Temi
+- Keyk Dos Reis
+- Leonardo Oliveira
+- Felipe Miranda
+
+## 13. Versões do projeto
+
+Durante o desenvolvimento, foram criadas diferentes versões do circuito no Wokwi:
+
+- Aula 2 — Projeto inicial.
+- Aula 3 — Simulação.
+- V02 — Leitura dos sensores.
+- V04 — Validação dos dados.
+- V05 — Integração com backend.
+
+## 14. Considerações finais
+
+O desenvolvimento do AtmosHub foi realizado de forma gradual, passando por etapas de planejamento, montagem, leitura de sensores, validação de dados, desenvolvimento do backend, armazenamento em banco de dados e visualização das informações.
+
+Cada sprint contribuiu para a evolução do projeto e permitiu testar diferentes partes do sistema.
+
+Ao final, foi possível demonstrar a estrutura de coleta, processamento, armazenamento e apresentação dos dados utilizando informações controladas.
+
+Apesar de a comunicação MQTT real não ter sido comprovada devido às restrições da rede institucional, o projeto apresentou a integração entre backend, banco de dados, API e dashboard.
+
+O AtmosHub permitiu aplicar conhecimentos de programação, sistemas embarcados, comunicação entre dispositivos e desenvolvimento de aplicações.
+
+## 15. Créditos
+
+Projeto desenvolvido pelo Grupo 2, como parte das atividades acadêmicas de desenvolvimento de sistemas com ESP32 e sensores ambientais.
